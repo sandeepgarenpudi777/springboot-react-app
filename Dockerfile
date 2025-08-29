@@ -1,14 +1,23 @@
-# 1. Use a lightweight JDK image
-FROM openjdk:17-jdk-slim
-
-# 2. Set working directory inside container
+# --------- Build Stage ---------
+FROM maven:3.9.4-eclipse-temurin-17 AS build
 WORKDIR /app
 
-# 3. Copy Maven/Gradle build artifact into container
-COPY target/*.jar app.jar
+# Copy Maven files
+COPY pom.xml .
+COPY src ./src
 
-# 4. Expose the port (Render will map this dynamically)
-EXPOSE 8080
+# Build the Spring Boot app
+RUN mvn clean package -DskipTests
 
-# 5. Run the JAR
+# --------- Run Stage ---------
+FROM eclipse-temurin:17-jdk
+WORKDIR /app
+
+# Copy built JAR from build stage
+COPY --from=build /app/target/*.jar app.jar
+
+# Expose port (Render dynamically assigns PORT)
+EXPOSE 8083
+
+# Run the JAR
 ENTRYPOINT ["java","-jar","app.jar"]
