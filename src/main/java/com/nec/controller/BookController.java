@@ -10,7 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/books")
-@CrossOrigin(origins = "https://react-library-app.onrender.com") // adjust for your frontend port
+//@CrossOrigin(origins = "https://react-library-app.onrender.com") // adjust for your frontend port
 public class BookController {
 
     private final BookService service;
